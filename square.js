@@ -1,5 +1,5 @@
 
-module.exports = class Cell {
+module.exports = class Square {
     
     constructor() {
         this._revealed = false;

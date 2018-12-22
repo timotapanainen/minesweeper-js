@@ -1,19 +1,19 @@
 const GameState = {
-    Ready: Symbol('Ready'),
+    Created: Symbol('Created'),
     Running: Symbol('Running'),
-    Succeeded: Symbol('Succeeded'),
+    Cleared: Symbol('Cleared'),
     Failed: Symbol('Failed'),
 
     toString: function(state) {
         switch (state) {
-            case GameState.Ready:
-                return "READY";
+            case GameState.Created:
+                return "Created";
             case GameState.Running:
-                return "RUNNING";
+                return "Running";
             case GameState.Failed:
-                return "FAILED";
-            case GameState.Succeeded:
-                return "SUCCEEDED";
+                return "Failed";
+            case GameState.Cleared:
+                return "Cleared";
         }
     }
 }

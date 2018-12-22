@@ -7,27 +7,27 @@ class Minesweeper {
 
     constructor({width, height, mines, field}) {
         this._timer = new Timer();
-        this._state = GameState.Ready;
+        this._state = GameState.Created;
         this._field = field ||
             new Field(width, height, Coordinate.generator(mines, width, height));
     }
 
     reveal(coordinate) {
 
-        if (this.isGameOver())
-            throw `Cannot reveal cell ${coordinate}! Game has ended.`;
+        if (this.isOver())
+            throw `Cannot reveal cell ${coordinate}! Game is over.`;
 
-        const cell = this._field.cellAt(coordinate);
+        const square = this._field.squareAt(coordinate);
 
-        if (cell.isRevealed)
+        if (square.isRevealed)
             throw `Cannot reveal cell ${coordinate}! Cell is already revealed.`
 
-        if (this.isGameReady())
+        if (!this.isStarted())
             this._startGame();
         
-        const revealedCoords = this._field.revealCellAt(coordinate);
+        const revealedCoords = this._field.revealSquareAt(coordinate);
 
-        if (cell.isMined)
+        if (square.isMined)
             this._endGame(false);
 
         if (this._field.isCleared)
@@ -41,11 +41,14 @@ class Minesweeper {
         this._state = GameState.Running;
     }
 
-    _endGame(succeeded) {
+    _endGame(cleared) {
         this._timer.end();
-        this._state = succeeded ? GameState.Succeeded : GameState.Failed;
+        this._state = cleared ? GameState.Cleared : GameState.Failed;
     }
 
+    squareAt(coordinate) {
+        return this._field.squareAt(coordinate);
+    }
 
     get state() {
         return this._state;
@@ -55,12 +58,20 @@ class Minesweeper {
         return this._timer.duration(); 
     }
 
-    isGameReady() {
-        return this._state === GameState.Ready;
+    get width() {
+        return this._field.width;
     }
 
-    isGameOver() {
-        return this._state === GameState.Succeeded || this.state === GameState.Failed;
+    get height() {
+        return this._field.height;
+    }
+
+    isStarted() {
+        return !(this._state === GameState.Created);
+    }
+
+    isOver() {
+        return this._state === GameState.Cleared || this.state === GameState.Failed;
     }  
     
     toString() {
